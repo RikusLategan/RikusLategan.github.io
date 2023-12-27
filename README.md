@@ -7,5 +7,5 @@ This space is under construction.  In the meantime check out the following links
 - Log and devlog: coming soon
 
 
-[Updated 2023 December 27]
+Updated 2023 December 27
 AR account: v4FyTHlOZ2Li52tiRzBRLMwYFDor6-U8X73Xgum0oes
