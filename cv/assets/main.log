@@ -1,0 +1,29 @@
+[2024-02-06 11:06:48.020] [info] Logseq App(0.10.5) Starting... 
+[2024-02-06 11:06:49.171] [info] restore proxy settings {:type "system"}
+[2024-02-06 11:06:49.198] [info] set proxy to {:type "system"}
+[2024-02-06 11:07:14.170] [debug] :electron.handler/watch-dir {:path "C:/Users/Rikus/.logseq/config"}
+[2024-02-06 11:07:14.447] [debug] :electron.handler/unwatch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 11:07:14.459] [debug] :electron.handler/watch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 20:45:22.663] [info] Logseq App(0.10.5) Starting... 
+[2024-02-06 20:45:26.335] [info] restore proxy settings {:type "system"}
+[2024-02-06 20:45:26.337] [info] set proxy to {:type "system"}
+[2024-02-06 20:46:10.739] [debug] :electron.handler/watch-dir {:path "C:/Users/Rikus/.logseq/config"}
+[2024-02-06 20:46:10.931] [debug] :electron.handler/unwatch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 20:46:10.933] [debug] :electron.handler/watch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 20:46:16.325] [info] :electron.handler/backup backup db file journals/2024_02_04.md
+[2024-02-06 20:46:16.392] [info] :electron.handler/backup backup db file journals/2024_02_05.md
+[2024-02-06 21:48:06.118] [info] :electron.handler/backup backup db file logseq/config.edn
+[2024-02-06 23:11:30.392] [debug] window-all-closed Quitting...
+[2024-02-06 23:37:47.779] [info] Logseq App(0.10.5) Starting... 
+[2024-02-06 23:37:47.857] [info] restore proxy settings {:type "system"}
+[2024-02-06 23:37:48.020] [info] set proxy to {:type "system"}
+[2024-02-06 23:37:57.361] [debug] :electron.handler/watch-dir {:path "C:/Users/Rikus/.logseq/config"}
+[2024-02-06 23:37:57.475] [debug] :electron.handler/unwatch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 23:37:57.476] [debug] :electron.handler/watch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 23:44:13.232] [debug] window-all-closed Quitting...
+[2024-02-06 23:56:05.060] [info] Logseq App(0.10.5) Starting... 
+[2024-02-06 23:56:05.132] [info] restore proxy settings {:type "system"}
+[2024-02-06 23:56:05.208] [info] set proxy to {:type "system"}
+[2024-02-06 23:56:20.967] [debug] :electron.handler/watch-dir {:path "C:/Users/Rikus/.logseq/config"}
+[2024-02-06 23:56:21.128] [debug] :electron.handler/unwatch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
+[2024-02-06 23:56:21.225] [debug] :electron.handler/watch-dir {:path "D:/Users/Rikus/Documents/Rikus-Logseq-Tablog"}
