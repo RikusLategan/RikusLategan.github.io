@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #1a1f36; }
+        .dashboard-container { display: flex; flex-direction: column; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .alert-banner {
+            display: none; background: #b91c1c; color: white; padding: 12px 20px;
+            border-radius: 8px; font-weight: 600; margin-bottom: 10px; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .card-label { font-size: 0.85rem; color: #697386; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+        .card-value { font-size: 1.1rem; font-weight: 600; word-break: break-all; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; width: fit-content; }
+        .status-online { background: #e3f9e5; color: #1f7d36; }
+        .status-offline { background: #fee2e2; color: #b91c1c; }
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .canvas-wrapper { position: relative; flex-grow: 1; min-height: 220px; }
+        .log-container { background: #1a1f36; color: #00ff00; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; height: 120px; overflow-y: auto; }
+        .footer { font-size: 0.8rem; color: #697386; text-align: center; margin-top: 20px; }
+        .btn-refresh { background: #5865f2; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .btn-refresh:hover { background: #4752c4; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="critical-alert" class="alert-banner">⚠️ CRITICAL: PUBLIC STATUS SHOWS OFFLINE</div>
+
+        <div class="kpi-row">
+            <div class="card">
+                <div class="card-label">Public Status (JSON)</div>
+                <div id="status-container"></div>
+            </div>
+            <div class="card">
+                <div class="card-label">Active Model</div>
+                <div class="card-value" id="model-val">---</div>
+            </div>
+            <div class="card">
+                <div class="card-label">GitHub Endpoint</div>
+                <div class="card-value" id="endpoint-val" style="color: #5865f2;">---</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Last Sync</div>
+                <div class="card-value" id="update-val">---</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-label">Connection Uptime History</div>
+                <div class="canvas-wrapper"><canvas id="uptimeChart"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="card-label">Local Engine VRAM Status</div>
+                <div class="canvas-wrapper"><canvas id="vramChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Live Diagnostics</div>
+            <div class="log-container" id="event-log"></div>
+            <button class="btn-refresh" onclick="window.location.reload()">Refresh All Metrics</button>
+        </div>
+
+        <div class="footer">Source: <span id="source-link"></span></div>
+    </div>
+
+    <script>
+        window.onerror = function(message) {
+            google.colab.kernel.invokeFunction('report_js_error', [message], {});
+        };
+
+        const data = DATA_PLACEHOLDER;
+        const log = document.getElementById('event-log');
+
+        function addLog(msg) {
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.prepend(entry);
+        }
+
+        document.getElementById('endpoint-val').textContent = data.endpoint;
+        document.getElementById('update-val').textContent = data.last_updated;
+        document.getElementById('model-val').textContent = data.active_model;
+        document.getElementById('source-link').textContent = data.source_url;
+
+        const statusContainer = document.getElementById('status-container');
+        const badge = document.createElement('span');
+        badge.className = data.online ? 'status-badge status-online' : 'status-badge status-offline';
+        badge.textContent = data.online ? '● ONLINE' : '● OFFLINE';
+        statusContainer.appendChild(badge);
+
+        if (!data.online) {
+            document.getElementById('critical-alert').style.display = 'block';
+            addLog("🚨 ALERT: Remote JSON reports pipeline is offline.");
+        } else {
+            addLog("✅ Public status confirmed online.");
+        }
+
+        // --- Uptime History Chart ---
+        const historyLabels = data.history.map(h => h.time);
+        const historyData = data.history.map(h => h.online);
+
+        new Chart(document.getElementById('uptimeChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: historyLabels,
+                datasets: [{
+                    label: 'Connection Status (1=Online, 0=Offline)',
+                    data: historyData,
+                    borderColor: '#5865f2',
+                    backgroundColor: 'rgba(88, 101, 242, 0.1)',
+                    fill: true,
+                    stepped: true,
+                    tension: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { min: -0.1, max: 1.1, ticks: { callback: v => v == 1 ? 'ON' : (v == 0 ? 'OFF' : '') } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- VRAM Status Chart (Mocked static for architecture) ---
+        new Chart(document.getElementById('vramChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['VRAM Used', 'VRAM Free'],
+                datasets: [{
+                    data: data.engine_ok ? [85, 15] : [0, 100],
+                    backgroundColor: ['#22c55e', '#e2e8f0']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { x: { display: false }, y: { grid: { display: false } } }
+            }
+        });
+    </script>
+</body>
+</html>
