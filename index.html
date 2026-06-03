@@ -70,6 +70,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </li>
 </ul>
 
+<div style="font-family: sans-serif; display: flex; align-items: center; gap: 10px; padding: 10px;">
+    <!-- The Status Indicator Circle -->
+    <div id="status-light" style="width: 15px; height: 15px; border-radius: 50%; background-color: #ffa500; box-shadow: 0 0 8px #ffa500; transition: all 0.5s ease;"></div>
+    
+    <!-- The Text Label -->
+    <span style="font-weight: bold; color: #333;">LLMColab</span>
+</div>
+
+<script>
+    // Fetch the automated status file from your website root
+    fetch('./llm_status.json')
+        .then(response => {
+            if (!response.ok) throw new Error('Offline');
+            return response.json();
+        })
+        .then(data => {
+            const light = document.getElementById('status-light');
+            if (data.online === true) {
+                // Switch light to Vibrant Green
+                light.style.backgroundColor = '#00FF00';
+                light.style.boxShadow = '0 0 10px #00FF00';
+            } else {
+                // Fallback to Orange if data explicitly says false
+                light.style.backgroundColor = '#ffa500';
+                light.style.boxShadow = '0 0 8px #ffa500';
+            }
+        })
+        .catch(err => {
+            // Keep light Orange if the file is missing or server is unreachable
+            const light = document.getElementById('status-light');
+            light.style.backgroundColor = '#ffa500';
+            light.style.boxShadow = '0 0 8px #ffa500';
+        });
+</script>
+
+      
 <p>[Created 2023]</p>
 <p>[Updated 2026 April 20<sup>th</sup> Monday 11:00 am]</p>
       
