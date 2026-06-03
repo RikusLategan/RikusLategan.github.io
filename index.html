@@ -22,6 +22,43 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+COPY THE CODE BELOW INTO YOUR WEBSITE HTML:
+----------------------------------------
+
+<!-- AI Status Widget for rikuslategan.github.io -->
+<div id="ai-status-widget" style="font-family: sans-serif; padding: 15px; border-radius: 10px; background: #f8f9fa; border: 1px solid #ddd; max-width: 300px;">
+    <div style="font-size: 0.8rem; color: #666; font-weight: bold; text-transform: uppercase;">System Status</div>
+    <div id="status-indicator" style="font-size: 1.2rem; font-weight: bold; margin: 5px 0;">Checking...</div>
+    <div id="status-time" style="font-size: 0.7rem; color: #888;"></div>
+</div>
+
+<script>
+async function updateStatus() {
+    try {
+        const response = await fetch('/llm_status.json');
+        const data = await response.json();
+        const indicator = document.getElementById('status-indicator');
+        const timeBox = document.getElementById('status-time');
+        
+        if (data.online) {
+            indicator.innerHTML = '<span style="color: #28a745;">● Online</span>';
+            indicator.title = 'Endpoint: ' + data.endpoint;
+        } else {
+            indicator.innerHTML = '<span style="color: #dc3545;">● Offline</span>';
+        }
+        timeBox.innerText = 'Last updated: ' + data.last_updated;
+    } catch (e) {
+        document.getElementById('status-indicator').innerText = 'Status Unavailable';
+    }
+}
+updateStatus();
+// Refresh every 5 minutes
+setInterval(updateStatus, 300000);
+</script>
+
+----------------------------------------
+
+    
 <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Rikus Lategan</title>
 <meta name="generator" content="Jekyll v3.9.3" />
